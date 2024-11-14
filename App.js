@@ -10,18 +10,18 @@ const Stack = createStackNavigator();
 export default function App() {
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName="Login">
+      <Stack.Navigator initialRouteName="LoginScreen">
         <Stack.Screen 
-          name="Login" 
+          name="LoginScreen" 
           component={LoginScreen} 
-          options={{ headerShown: false }} // Puedes ocultar el header si lo prefieres
+          options={{ headerShown: false }}
         />
         <Stack.Screen 
-          name="ForgotPassword" 
+          name="ForgotPasswordScreen" 
           component={ForgotPasswordScreen} 
-          options={{
-            title: 'Restablecer Contraseña', // Título del header
-            headerLeft: () => null, // Si no deseas la flecha por defecto en la parte izquierda
+          options=
+            {{headerLeft: () => null,
+              headerShown: false,
           }} 
         />
       </Stack.Navigator>

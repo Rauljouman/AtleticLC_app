@@ -1,8 +1,8 @@
 import { StatusBar } from 'expo-status-bar';
 import React, { useState } from 'react';
 import { StyleSheet, Text, TouchableOpacity, Dimensions, Image, View, Alert } from 'react-native';
-import Button from '../components/Button';
-import InputField from '../components/InputField'; // Importar el componente InputField
+import ButtonLogin from '../components/ButtonLogin';
+import InputFieldLogin from '../components/InputFieldLogin'; // Importar el componente InputField
 import { useNavigation } from '@react-navigation/native';
 
 const { width, height } = Dimensions.get('window');
@@ -21,6 +21,9 @@ const mockLogin = (email, password) => {
 export default function LoginScreen() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+
+  // Obtén el objeto navigation
+  const navigation = useNavigation();
 
   // Validación y login
   const validateAndLogin = async () => {
@@ -54,26 +57,27 @@ export default function LoginScreen() {
       />
       <Text style={styles.titulo}>Atletic Les Corts</Text>
 
-      <InputField
+      <InputFieldLogin
         placeholder="Email"
         value={email}
         onChangeText={setEmail}
       />
-      <InputField
+      <InputFieldLogin
         placeholder="Contraseña"
         value={password}
         secureTextEntry
         onChangeText={setPassword}
       />
 
-      <Button
+      <ButtonLogin
         title="Iniciar Sesión"
         onPress={validateAndLogin}
       />
 
-      <Button onPress={() => navigation.navigate('ForgotPasswordScreen')}>
-        ¿Olvidaste las credenciales?
-      </Button>
+      {/* Usar el nombre correcto de la pantalla: 'ForgotPasswordScreen' */}
+      <TouchableOpacity onPress={() => navigation.navigate('ForgotPasswordScreen')}>
+        <Text style={styles.forgotPasswordText}>¿Olvidaste tus credenciales?</Text>
+      </TouchableOpacity>
 
       <StatusBar style="auto" />
     </View>
@@ -87,22 +91,14 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  titulo: {
-    fontSize: 30,
-    fontWeight: 'bold',
-  },
   escudo_alc: {
     width: 200,
     height: 200,
     transform: [{ rotate: '-45deg' }],
     marginBottom: 90,
   },
-
   forgotPasswordText: {
     fontSize: 17,
     color: '#007bff',
-
   },
-
 });
-

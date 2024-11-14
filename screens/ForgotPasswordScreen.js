@@ -1,73 +1,79 @@
 import { useNavigation } from '@react-navigation/native';
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert } from 'react-native';
+import { View, Text, Image, TouchableOpacity, StyleSheet, Alert } from 'react-native';
+import InputFieldLogin from '../components/InputFieldLogin';
+import ButtonLogin from '../components/ButtonLogin';
 
 const ForgotPasswordScreen = ({ navigation }) => {
-  // Estados para los campos del formulario
   const [name, setName] = useState('');
   const [team, setTeam] = useState('');
   const [subject, setSubject] = useState('');
 
   const handleSubmit = () => {
-    // Lógica de validación simple
     if (!name || !team || !subject) {
       Alert.alert('Error', 'Por favor, rellena todos los campos.');
       return;
     }
-    if (!name) {
-      Alert.alert('Error', 'Introduce tu nombre.');
-      return;
-    }
-    if (!team) {
-      Alert.alert('Error', 'Introduce el equipo.');
-      return;
-    }
-    if (!subject) {
-      Alert.alert('Error', 'Introduce el asunto.');
-      return;
-    }
 
-    Alert.alert('Enviado', 'Formulario enviado con éxito');
-    // Aquí puedes agregar cualquier otra acción después de enviar el formulario (como limpiar los campos)
+    // Envía los datos del formulario al backend
+    fetch('http://localhost:5000/send-email', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        name: name,
+        team: team,
+        subject: subject,
+      }),
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        if (data.message === 'Correo enviado exitosamente') {
+          Alert.alert('Enviado', 'Formulario enviado con éxito');
+          // Opcionalmente, limpiar los campos del formulario
+          setName('');
+          setTeam('');
+          setSubject('');
+        } else {
+          Alert.alert('Error', 'Hubo un problema al enviar el formulario');
+        }
+      })
+      .catch((error) => {
+        console.error(error);
+        Alert.alert('Error', 'No se pudo conectar con el servidor');
+      });
   };
 
   return (
     <View style={styles.container}>
-      {/* Botón de regresar al Login */}
       <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
         <Text style={styles.backButtonText}>←</Text>
       </TouchableOpacity>
 
-      <Text style={styles.title}>Formulario de Credenciales</Text>
+      <Image source={require('../assets/Escudo_alc.jpg')} style={styles.escudo_alc} />
 
-      {/* Campo de nombre */}
-      <TextInput
+      <Text style={styles.titleForm}>Formulario de credenciales</Text>
+
+      <InputFieldLogin
         style={styles.input}
         placeholder="Nombre"
         value={name}
         onChangeText={setName}
       />
-
-      {/* Campo de equipo */}
-      <TextInput
+      <InputFieldLogin
         style={styles.input}
         placeholder="Equipo"
         value={team}
         onChangeText={setTeam}
       />
-
-      {/* Campo de asunto */}
-      <TextInput
+      <InputFieldLogin
         style={styles.input}
         placeholder="Asunto"
         value={subject}
         onChangeText={setSubject}
       />
-
-      {/* Botón de enviar */}
-      <TouchableOpacity style={styles.button} onPress={handleSubmit}>
-        <Text style={styles.buttonText}>Enviar</Text>
-      </TouchableOpacity>
+      <ButtonLogin onPress={handleSubmit} title="Enviar" />
     </View>
   );
 };
@@ -80,32 +86,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     backgroundColor: '#f5f5f5',
   },
-  title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    marginBottom: 20,
-  },
-  input: {
-    width: '100%',
-    height: 40,
-    borderColor: '#ccc',
-    borderWidth: 1,
-    marginBottom: 15,
-    paddingLeft: 10,
-    borderRadius: 5,
-  },
-  button: {
-    backgroundColor: '#4CAF50',
-    paddingVertical: 12,
-    paddingHorizontal: 40,
-    borderRadius: 5,
-    marginTop: 20,
-  },
-  buttonText: {
-    color: 'white',
-    fontSize: 16,
-    textAlign: 'center',
-  },
   backButton: {
     position: 'absolute',
     top: 40,
@@ -115,6 +95,16 @@ const styles = StyleSheet.create({
   backButtonText: {
     fontSize: 24,
     color: '#000',
+  },
+  escudo_alc: {
+    width: 200,
+    height: 200,
+    transform: [{ rotate: '-45deg' }],
+    marginBottom: 90,
+  },
+  titleForm: {
+    fontSize: 24,
+    fontWeight: 'bold',
   },
 });
 
