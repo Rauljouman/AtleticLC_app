@@ -1,15 +1,11 @@
-import { StatusBar } from 'expo-status-bar';
-import React, { useState } from 'react';
-import { StyleSheet, Text, TouchableOpacity, Dimensions, Image, View, Alert } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
+import React from "react";
+import { View, Text, StyleSheet } from "react-native";
+import Header from "../components/Header";
 
 const TeamScreen = () => {
-
-const navigation = useNavigation();
-
   return (
     <View style={styles.container}>
-      <Text>¡Bienvenido al Feed!</Text>
+      <Text style={styles.content}>Contenido del mural del equipo</Text>
     </View>
   );
 };
@@ -17,8 +13,12 @@ const navigation = useNavigation();
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    backgroundColor: "#f5f5f5",
+  },
+  content: {
+    marginTop: 20,
+    textAlign: "center",
+    fontSize: 16,
   },
 });
 

@@ -1,105 +1,88 @@
-import { StatusBar } from 'expo-status-bar';
-import React, { useState } from 'react';
-import { StyleSheet, Text, TouchableOpacity, Dimensions, Image, View, Alert } from 'react-native';
-import ButtonLogin from '../components/BottomTabNavigator';
-import InputFieldLogin from '../components/InputFieldLogin'; // Importar el componente InputField
-import { useNavigation } from '@react-navigation/native';
+import React, { useState } from "react";
+import { View, TextInput, Button, Text, Alert, StyleSheet, Image } from "react-native";
+import { useNavigation } from "@react-navigation/native";
+import { signInWithEmailAndPassword } from "firebase/auth";
+import { auth, firestore } from "../firebase/firebaseConfig";
 
-const { width, height } = Dimensions.get('window');
-
-// Función que simula la verificación de login
-const mockLogin = (email, password) => {
-  return new Promise((resolve, reject) => {
-    if (email === 'test@example.com' && password === 'password123') {
-      resolve('Login successful');
-    } else {
-      reject('Invalid email or password');
-    }
-  });
-};
-
-const LoginScreen = () => { 
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-
-  // Obtén el objeto navigation
+const LoginScreen = () => {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const navigation = useNavigation();
 
-  // Validación y login
   const validateAndLogin = async () => {
-    if (!email && !password) {
-        Alert.alert('Introduce el email y la contraseña');
-        return;
+    if (!email || !password) {
+      Alert.alert("Error", "Introduce el email y la contraseña");
+      return;
     }
-    if (!email) {
-        Alert.alert('Introduce el email');
-        return;
-    }
-    if (!password) {
-        Alert.alert('Introduce la contraseña');
-        return;
-    }
-
+  
     try {
-      const response = await mockLogin(email, password);
-      Alert.alert('Éxito', response);
-      navigation.navigate('TeamScreen');
+      const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      const userId = userCredential.user.uid; // Obtenemos el UID del usuario
+  
+      Alert.alert("Éxito", "Inicio de sesión exitoso");
+      navigation.navigate("Main", { userId }); // Navegamos a Main y enviamos userId
     } catch (error) {
-      Alert.alert('Error', error);
+      Alert.alert("Error", "Email o contraseña incorrectos");
+      console.error("Error de inicio de sesión:", error);
     }
   };
 
   return (
     <View style={styles.container}>
-      <Image
-        source={require('../assets/Escudo_alc.jpg')}
-        style={styles.escudo_alc}
-      />
-      <Text style={styles.titulo}>Atletic Les Corts</Text>
-
-      <InputFieldLogin
+      <Image source={require("../assets/Escudo_alc.jpg")} style={styles.escudo_alc} />
+      <Text style={styles.title}>Atletic Les Corts</Text>
+      <TextInput
         placeholder="Email"
         value={email}
-        onChangeText={setEmail}
+        onChangeText={(text) => setEmail(text.trim())}
+        style={styles.input}
       />
-      <InputFieldLogin
+      <TextInput
         placeholder="Contraseña"
         value={password}
         secureTextEntry
         onChangeText={setPassword}
+        style={styles.input}
       />
-
-      <ButtonLogin
-        title="Iniciar Sesión"
-        onPress={validateAndLogin}
-      />
-
-      {/* Para ir a la pantalla 'ForgotPasswordScreen' */ }
-      <TouchableOpacity onPress={() => navigation.navigate('ForgotPasswordScreen')}>
-        <Text style={styles.forgotPasswordText}>¿Olvidaste tus credenciales?</Text>
-      </TouchableOpacity>
-
-      <StatusBar style="auto" />
+      <Button title="Iniciar Sesión" onPress={validateAndLogin} />
+      <Text
+        style={styles.forgotPassword}
+        onPress={() => navigation.navigate("ForgotPasswordScreen")}
+      >
+        ¿Olvidaste tus credenciales?
+      </Text>
     </View>
   );
-}
+};
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f5f5f5',
-    alignItems: 'center',
-    justifyContent: 'center',
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "#f5f5f5",
   },
   escudo_alc: {
     width: 200,
     height: 200,
-    transform: [{ rotate: '-45deg' }],
-    marginBottom: 90,
+    marginBottom: 50,
+    transform: [{ rotate: "-45deg" }],
   },
-  forgotPasswordText: {
-    fontSize: 17,
-    color: '#007bff',
+  title: {
+    fontSize: 24,
+    marginBottom: 20,
+  },
+  input: {
+    borderWidth: 1,
+    borderColor: "#ccc",
+    padding: 10,
+    margin: 10,
+    width: "80%",
+    borderRadius: 5,
+  },
+  forgotPassword: {
+    marginTop: 10,
+    color: "#007bff",
   },
 });
 

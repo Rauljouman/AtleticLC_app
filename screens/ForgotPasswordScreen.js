@@ -5,24 +5,24 @@ import { useNavigation } from '@react-navigation/native';
 const ForgotPasswordScreen = () => {
   const [email, setEmail] = useState('');  // Correo del usuario
   const [subject, setSubject] = useState('');  // Asunto
-  const [description, setDescription] = useState('');  // Descripción del asunto
+  const [message, setMessage] = useState('');  // Descripción del asunto
   
   // Obtén el objeto navigation
   const navigation = useNavigation();
 
   const handleSubmit = () => {
-    if (!email || !subject || !description) {
+    if (!email || !subject || !message) {
       Alert.alert('Error', 'Por favor, rellena todos los campos.');
       return;
     }
 
     // Enviar los datos al servidor
-    fetch('http://192.168.2.172:5000/send-email', {
+    fetch('http://192.168.1.64:3001/send-email', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ email, subject, description }),
+      body: JSON.stringify({ email, subject, message }),
     })
       .then((response) => response.json())
       .then((data) => {
@@ -30,7 +30,7 @@ const ForgotPasswordScreen = () => {
           Alert.alert('Enviado', 'Mensaje enviado con éxito');
           setEmail('');
           setSubject('');
-          setDescription('');
+          setMessage('');
           navigation.goBack();  // Vuelve a la pantalla anterior
         } else {
           Alert.alert('Error', 'Hubo un problema al enviar el mensaje.');
@@ -64,8 +64,8 @@ const ForgotPasswordScreen = () => {
       <TextInput
         style={[styles.input, { height: 100 }]}
         placeholder="Descripción del asunto"
-        value={description}
-        onChangeText={setDescription}
+        value={message}
+        onChangeText={setMessage}
         multiline
       />
       <TouchableOpacity style={styles.button} onPress={handleSubmit}>

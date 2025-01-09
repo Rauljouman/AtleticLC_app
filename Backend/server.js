@@ -1,47 +1,54 @@
-const express = require('express');
-const nodemailer = require('nodemailer');
-const bodyParser = require('body-parser');
+const express = require("express");
+const cors = require("cors");
+const bodyParser = require("body-parser");
+const nodemailer = require("nodemailer");
 
 const app = express();
-const port = 5000;
+const PORT = 5001; // Cambia el puerto si es necesario
 
-// Middleware para parsear el JSON del cuerpo de la solicitud
-app.use(bodyParser.json());
+// Middleware
+app.use(cors({ origin: "*" })); // Permitir solicitudes desde cualquier origen
+app.use(bodyParser.json()); // Permitir procesar solicitudes con cuerpo JSON
 
-// Configura tu transporte de correo
+// Configuración de Nodemailer
 const transporter = nodemailer.createTransport({
-  service: 'gmail',  // Usamos Gmail en este ejemplo
+  service: "gmail", // Proveedor de correo
   auth: {
-    user: 'rauljouman.ip@gmail.com',  // Tu correo
-    pass: 'Habbo.es1',  // Tu contraseña de aplicación
+    user: "rauljouman.ip@gmail.com", // Tu correo de Gmail
+    pass: "njwk doot tcdh pluc", // Contraseña de aplicación de Gmail
   },
 });
 
-// Ruta para recibir el correo desde el frontend
-app.post('/send-email', (req, res) => {
-  console.log(req.body);  // Ver los datos recibidos desde el frontend
+// Endpoint para enviar correos
+app.post("/send-email", async (req, res) => {
+  const {name, email, subject, message } = req.body; // Datos recibidos desde el frontend
 
-  const { email, subject, description } = req.body;  // Desestructura los datos recibidos
-
+  // Configurar el correo
   const mailOptions = {
-    from: email,  // El correo del usuario
-    to: 'rauljouman.ip@gmail.com',  // El correo donde recibirás el mensaje
-    subject: subject,  // El asunto que el usuario ingresó
-    text: `Correo del usuario: ${email}\nAsunto: ${subject}\nMensaje: ${description}`,  // El mensaje completo
+    from: `${email}>`, //Correo del remitente
+    to: "rauljouman.ip@gmail.com", // Tu correo donde recibirás los mensajes
+    replyTo: email, // Permite que respondas directamente al remitente
+    subject: `${subject}`, // Asunto del correo
+    text: `${message}`, 
   };
 
-  // Enviar el correo
-  transporter.sendMail(mailOptions, (error, info) => {
-    if (error) {
-      console.error(error);  // Muestra el error si ocurre
-      return res.status(500).json({ message: 'Error al enviar el correo', error });
-    }
-    console.log('Correo enviado: ', info.response);  // Muestra información del correo enviado
-    return res.status(200).json({ message: 'Correo enviado exitosamente' });
-  });
+  try {
+    // Enviar el correo
+    await transporter.sendMail(mailOptions);
+    console.log("Correo enviado con éxito");
+    res.status(200).json({ message: "Correo enviado con éxito" });
+  } catch (error) {
+    console.error("Error enviando el correo:", error);
+    res.status(500).json({ error: "Error enviando el correo" });
+  }
+});
+
+// Endpoint de prueba
+app.get("/", (req, res) => {
+  res.send("Servidor funcionando correctamente.");
 });
 
 // Iniciar el servidor
-app.listen(port, () => {
-  console.log(`Servidor escuchando en http://localhost:${port}`);
+app.listen(3001, "0.0.0.0", () => {
+  console.log(`Servidor escuchando en http://192.168.1.64:${PORT}`);
 });
