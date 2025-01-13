@@ -4,7 +4,7 @@ const bodyParser = require("body-parser");
 const nodemailer = require("nodemailer");
 
 const app = express();
-const PORT = 5001; // Cambia el puerto si es necesario
+const PORT = 8081; // Cambia el puerto si es necesario
 
 // Middleware
 app.use(cors({ origin: "*" })); // Permitir solicitudes desde cualquier origen
@@ -49,6 +49,6 @@ app.get("/", (req, res) => {
 });
 
 // Iniciar el servidor
-app.listen(3001, "0.0.0.0", () => {
-  console.log(`Servidor escuchando en http://192.168.1.64:${PORT}`);
+app.listen(PORT, "0.0.0.0", () => {
+  console.log(`Servidor escuchando en http://192.168.1.63:${PORT}`);
 });

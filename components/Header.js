@@ -7,7 +7,7 @@ const Header = () => {
   return (
     <SafeAreaView style={styles.safeArea}>
       <View style={styles.headerContainer}>
-        <Text style={styles.greeting}>Hola ✌️</Text>
+        <Text style={styles.greeting}>Bienvenido✌️</Text>
         <TouchableOpacity>
           <FontAwesome name="bell" size={24} color="black" />
         </TouchableOpacity>

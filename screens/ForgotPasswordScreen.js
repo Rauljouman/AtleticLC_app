@@ -7,7 +7,6 @@ const ForgotPasswordScreen = () => {
   const [subject, setSubject] = useState('');  // Asunto
   const [message, setMessage] = useState('');  // Descripción del asunto
   
-  // Obtén el objeto navigation
   const navigation = useNavigation();
 
   const handleSubmit = () => {
@@ -26,7 +25,7 @@ const ForgotPasswordScreen = () => {
     })
       .then((response) => response.json())
       .then((data) => {
-        if (data.message === 'Correo enviado exitosamente') {
+        if (data.message === 'Correo enviado con éxito') {
           Alert.alert('Enviado', 'Mensaje enviado con éxito');
           setEmail('');
           setSubject('');
@@ -111,7 +110,7 @@ const styles = StyleSheet.create({
     height: 200,
     transform: [{ rotate: '-45deg' }],
     marginBottom: 90,
-  }
+  },
 });
 
 export default ForgotPasswordScreen;
